@@ -38,41 +38,41 @@ flowchart TD
     subgraph Sensing ["🌾 Field Soil Sensing"]
         SoilProbe["Soil Moisture Sensor Probe<br/>(Immersed in Seedling Tray Soil)"]
         SoilComp["Analog Comparator Module"]
-        SoilProbe -->|Electrical Conductivity| SoilComp
-        SoilComp -->|Analog Voltage 0-3.3V| A0["NodeMCU Pin A0 (ADC0)"]
+        SoilProbe -->|"Electrical Conductivity"| SoilComp
+        SoilComp -->|"Analog Voltage 0-3.3V"| A0["NodeMCU Pin A0 (ADC0)"]
     end
 
     subgraph Controller ["🧠 Edge Logic (NodeMCU ESP8266)"]
         A0 --> CheckLoop["Periodic Soil Sampler<br/>(Timer: 2000 ms Interval)"]
         CheckLoop --> Logic{"Moisture Check<br/>Hysteresis Evaluation"}
         
-        Logic -- "Moisture < 500 (DRY)" --> DryState["STATE: SOIL DRY<br/>1. Pump Relay -> HIGH (ON)<br/>2. Enable Servo Sweep (85° - 150°)<br/>3. Send Alert Event: 'soil_dry'"]
-        Logic -- "Moisture > 600 (WET)" --> WetState["STATE: SOIL WET<br/>1. Pump Relay -> LOW (OFF)<br/>2. Center Servo -> 90° (PARK)<br/>3. Send Alert Event: 'soil_wet'"]
+        Logic -->|"Moisture < 500 (DRY)"| DryState["STATE: SOIL DRY<br/>1. Pump Relay: HIGH (ON)<br/>2. Enable Servo Sweep (85° - 150°)<br/>3. Send Alert Event: soil_dry"]
+        Logic -->|"Moisture > 600 (WET)"| WetState["STATE: SOIL WET<br/>1. Pump Relay: LOW (OFF)<br/>2. Center Servo: 90° (PARK)<br/>3. Send Alert Event: soil_wet"]
         
         ServoTimer["Servo Oscillation Timer<br/>(Timer: 30 ms Interval)"] --> MoveServo["Smooth Sprinkler Sweep<br/>(Increments/Decrements Angle)"]
     end
 
     subgraph Actuation ["⚙️ Physical Actuation & Hydraulics"]
-        DryState -->|Pin D1: HIGH| RelayModule["1-Channel 5V Relay Module"]
-        RelayModule -->|5V / 12V Power| Pump["Submersible DC Mini Water Pump"]
-        Pump -->|Water Pressure| FeederHose["Main Feeder Hose from Reservoir"]
+        DryState -->|"Pin D1: HIGH"| RelayModule["1-Channel 5V Relay Module"]
+        RelayModule -->|"5V / 12V Power"| Pump["Submersible DC Mini Water Pump"]
+        Pump -->|"Water Pressure"| FeederHose["Main Feeder Hose from Reservoir"]
         
-        MoveServo -->|Pin D2: PWM| Servo["SG90 Micro Servo Motor"]
-        Servo -->|Rotational Sweep 85°-150°| SprinklerNozzle["Mounted Oscillating Nozzle"]
+        MoveServo -->|"Pin D2: PWM"| Servo["SG90 Micro Servo Motor"]
+        Servo -->|"Rotational Sweep 85° - 150°"| SprinklerNozzle["Mounted Oscillating Nozzle"]
         FeederHose --> SprinklerNozzle
-        SprinklerNozzle -->|Uniform Water Spray| Plants["Multi-Cell Seedling Tray"]
+        SprinklerNozzle -->|"Uniform Water Spray"| Plants["Multi-Cell Seedling Tray"]
     end
 
     subgraph Cloud ["☁️ Blynk 2.0 IoT Cloud Telemetry"]
-        NodeMCU_WiFi["ESP8266 Wi-Fi Core"] -->|2.4GHz Wi-Fi / MQTT| BlynkCloud["Blynk Cloud Server"]
-        DryState -->|VirtualWrite V1, V2| BlynkCloud
-        WetState -->|VirtualWrite V1, V2| BlynkCloud
-        CheckLoop -->|VirtualWrite V0 (Moisture Value)| BlynkCloud
+        NodeMCU_WiFi["ESP8266 Wi-Fi Core"] -->|"2.4GHz Wi-Fi / MQTT"| BlynkCloud["Blynk Cloud Server"]
+        DryState -->|"VirtualWrite V1, V2"| BlynkCloud
+        WetState -->|"VirtualWrite V1, V2"| BlynkCloud
+        CheckLoop -->|"VirtualWrite V0: Moisture Value"| BlynkCloud
         
         BlynkCloud --> Gauge["Virtual Pin V0: Radial Moisture Gauge"]
-        BlynkCloud --> StatusText["Virtual Pin V1: Labeled Status ('🔴 DRY' / '🟢 WET')"]
+        BlynkCloud --> StatusText["Virtual Pin V1: Labeled Status (🔴 DRY / 🟢 WET)"]
         BlynkCloud --> StatusLED["Virtual Pin V2: Cloud LED Widget (0 / 255)"]
-        BlynkCloud --> PushAlert["Event Log / Push Notification ('soil_dry' / 'soil_wet')"]
+        BlynkCloud --> PushAlert["Event Log / Push Notification (soil_dry / soil_wet)"]
     end
 ```
 
