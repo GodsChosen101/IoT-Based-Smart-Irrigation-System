@@ -14,9 +14,20 @@ An intelligent, cloud-connected precision agriculture and automated irrigation s
 
 ## 📸 Project Demonstration & Hardware Showcase
 
-| Breadboard & Actuator Setup | Live Remote Blynk IoT Telemetry |
+### 1. Physical Hardware & Live Cloud Telemetry
+| Physical Circuit & Irrigation Bed | Live Remote Blynk IoT Dashboard |
 | :---: | :---: |
-| *(Seedling tray, drip network, NodeMCU, relay & oscillating servo nozzle)* | *(Blynk IoT cloud dashboard on tablet showing real-time gauge & status)* |
+| <img src="assets/hardware_setup.jpg" width="400" alt="Hardware Setup: Seedling Tray, NodeMCU, Relay & Servo Sprinkler"> | <img src="assets/blynk_dashboard_live.jpg" width="400" alt="Live Blynk IoT Dashboard on Tablet"> |
+| *Multi-cell seedling tray, drip network, NodeMCU ESP8266, 5V relay, and SG90 servo sprinkler nozzle* | *Blynk 2.0 cloud dashboard running on tablet displaying live moisture gauge & telemetry* |
+
+### 2. Live Automated Irrigation in Action
+<p align="center">
+  <img src="assets/system_demonstration.gif" width="340" alt="Smart Irrigation Live Demonstration">
+  <br>
+  <em><b>Live System Response:</b> Removing the sensor probe from moist soil drops the reading below the 500 threshold, instantly engaging the pump relay, oscillating the SG90 sprinkler nozzle across the plant canopy (85°–150°), and broadcasting a <code>🔴 SOIL DRY</code> alert to the Blynk cloud dashboard.</em>
+  <br><br>
+  🎬 <a href="assets/system_demonstration.mp4"><strong>Download / Watch High-Definition Demonstration Video (.MP4)</strong></a>
+</p>
 
 ---
 
